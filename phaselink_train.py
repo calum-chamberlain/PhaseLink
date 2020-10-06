@@ -8,8 +8,9 @@ import json
 import pickle
 
 n_epochs = 100
-enable_amp = True
+enable_amp = False  # Requires GPU
 if enable_amp:
+    # This is not easy to install...
     import apex.amp as amp
 
 class MyDataset(torch.utils.data.Dataset):
@@ -199,10 +200,14 @@ class Model():
                     reca_n_0 += torch.numel(y_true[y_true<0.5])
                     reca_n_1 += torch.numel(y_true[y_true>0.5])
 
-            print("Precision (Class 0): {:4.3f}%".format(prec_0/prec_n_0))
-            print("Recall (Class 0): {:4.3f}%".format(reca_0/reca_n_0))
-            print("Precision (Class 1): {:4.3f}%".format(prec_1/prec_n_1))
-            print("Recall (Class 1): {:4.3f}%".format(reca_1/reca_n_1))
+            if prec_n_0 > 0:
+                print("Precision (Class 0): {:4.3f}%".format(prec_0/prec_n_0))
+            if reca_n_0 > 0:
+                print("Recall (Class 0): {:4.3f}%".format(reca_0/reca_n_0))
+            if prec_n_1 > 0:
+                print("Precision (Class 1): {:4.3f}%".format(prec_1/prec_n_1))
+            if reca_n_1 > 0:
+                print("Recall (Class 1): {:4.3f}%".format(reca_1/reca_n_1))
 
             #y_pred_all = np.concatenate(y_pred_all)
             #y_true_all = np.concatenate(y_true_all)
